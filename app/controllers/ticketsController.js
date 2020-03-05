@@ -2,13 +2,8 @@ const Ticket = require('../models/ticket')
 const Customer = require('../models/customer')
 const sendEmail = require('../tasks/sendEmail')
 
-
-
 module.exports.list = (req, res) => {
-    Ticket.find().populate('department', ['_id', 'name']).populate('customer', ['_id', 'name']).populate({path: 'employees._id', model: 'Employee'})
-    // .populate('employees', ['_id'])
-    
-    // ['_id', 'name'])
+    Ticket.find({user: req.user._id}).populate('department', ['_id', 'name']).populate('customer', ['_id', 'name']).populate({path: 'employees._id', model: 'Employee'})
         .then(tickets => {
             res.json(tickets)
         })
@@ -22,7 +17,7 @@ module.exports.create = (req, res) => {
     const ticket = new Ticket(body)
     ticket.save()
         .then(ticket => {
-            Customer.findById(ticket.customer)
+            Customer.findOne({_id: ticket.customer})
                 .then(customer => {
                     const customerEmail = customer.email
                     sendEmail(customerEmail)
@@ -34,18 +29,18 @@ module.exports.create = (req, res) => {
         })
 }
 
-// how do I make this smaller?
 module.exports.update = (req, res) => {
     const body = req.body
     const id = req.params.id
-    Ticket.getStatus(id)
+    const userId = req.user._id
+    Ticket.getStatus(id, userId)
         .then(status => {
             if(!status && body.isResolved) {
                 console.log('it works')
-                Ticket.findByIdAndUpdate(id, body, {new: true, runValidators: true})
+                Ticket.findOneAndUpdate({_id: id, user: userId}, body, {new: true, runValidators: true})
                 .then(ticket => {
                     if(ticket) {
-                        Customer.findById(ticket.customer)
+                        Customer.find(ticket.customer)
                         .then(customer => {
                             const customerEmail = customer.email
                             sendEmail(customerEmail)
@@ -57,7 +52,7 @@ module.exports.update = (req, res) => {
                 })
                 .catch(err => res.json(err))
             } else {
-                Ticket.findByIdAndUpdate(id, body, {new: true, runValidators: true})
+                Ticket.findOneAndUpdate({_id: id, user: userId}, body, {new: true, runValidators: true})
                 .then(ticket => {
                     if(ticket) {
                         res.json(ticket)
@@ -76,7 +71,7 @@ module.exports.update = (req, res) => {
 
 module.exports.show = (req, res) => {
     const id = req.params.id
-    Ticket.findById(id)
+    Ticket.findOne({_id: id, user: req.user._id})
         .then(ticket => {
             if(ticket) {
                 res.json(ticket)
@@ -89,7 +84,7 @@ module.exports.show = (req, res) => {
 
 module.exports.destroy = (req, res) => {
     const id = req.params.id
-    Ticket.findById(id)
+    Ticket.findOneAndDelete({_id: id, user: req.user._id})
         .then(ticket => {
             if (ticket) {
                 res.json(ticket)

@@ -2,7 +2,7 @@ const Customer = require('../models/customer')
 const Ticket = require('../models/ticket')
 
 module.exports.list = (req,res) => {
-    Customer.find()
+    Customer.find({user: req.user._id})
         .then(customers => {
             res.json(customers)
         })
@@ -24,7 +24,7 @@ module.exports.create = (req, res) => {
 module.exports.show = (req, res) => {
     const id = req.params.id
     // {customer: {id, name, email, mobile}, tickets: [(of that customer)]}
-    Customer.findById(id, '_id name email mobile')
+    Customer.findOne({_id:id, user: req.user._id}, '_id name email mobile')
         .then(customer => {
             Ticket.find({'customer': id})
                 .then(tickets => {
@@ -44,7 +44,7 @@ module.exports.show = (req, res) => {
 module.exports.update = (req, res) => {
     const id = req.params.id
     const body = req.body
-    Customer.findByIdAndUpdate(id, body, {new: true, runValidators: true})
+    Customer.findOneAndUpdate({_id:id, user: req.user._id}, body, {new: true, runValidators: true})
         .then(customer => {
             if(customer) {
                 res.json(customer)
@@ -59,7 +59,7 @@ module.exports.update = (req, res) => {
 
 module.exports.destroy = (req, res) => {
     const id = req.params.id
-    Customer.findByIdAndDelete(id)
+    Customer.findOneAndDelete({_id:id, user: req.user._id})
         .then(customer => {
             if(customer) {
                 res.json(customer)

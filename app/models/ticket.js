@@ -3,14 +3,6 @@ const Schema = mongoose.Schema
 // populate this! 
 
 const ticketSchema = new Schema({
-    // code - string, required 
-    // priority - string, enum 
-    // customer - STOID, required
-    // department - STOID, required
-    // employees - [stoid]
-    // message - string, minlength 
-    // isResolved - Boolean
-    // createdAt - Date, default
     code: {
         type: String,
         required: true,
@@ -32,7 +24,6 @@ const ticketSchema = new Schema({
     },
     employees: {
         type: [{"_id": Schema.Types.ObjectId}],
-        // type: [Schema.types.ObjectId],
         ref: 'Employee',
         required: true
     },
@@ -47,13 +38,16 @@ const ticketSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now()
+    },
+    user: {
+        type: Schema.Types.ObjectId
     }
 }) 
 
 
-ticketSchema.statics.getStatus = function(id) {
+ticketSchema.statics.getStatus = function(id, userId) {
     const Ticket = this
-    return Ticket.findById(id)
+    return Ticket.findOne({_id:id, user: userId})
         .then(ticket => {
             return Promise.resolve(ticket.isResolved)
         })
