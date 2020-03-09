@@ -1,12 +1,12 @@
 import React from 'react'
-import {BrowserRouter, Link, Route, Switch} from 'react-router-dom'
+import {BrowserRouter, Route, Switch} from 'react-router-dom'
 
 import Home from './components/Home'
 import Register from './components/Users/Register'
 import Login from './components/Users/Login'
 import CustomerList from './components/customers/List'
 import CustomerNew from './components/customers/New'
-import CustomerShow from './components/customers/CustomerShow'
+import CustomerShow from './components/customers/Show'
 import DepartmentList from './components/departments/DepartmentList'
 import EmployeeList from './components/employees/EmployeeList'
 import NewEmployee from './components/employees/NewEmployee'
@@ -24,9 +24,8 @@ function App() {
 
   return (
     <BrowserRouter>
-    
-      <div className="container">
-        <Navigation />
+    <Navigation />
+      <div className="container col-12 d-flex justify-content-center" style={{marginTop:10}}>
         <Switch>
         <Route path="/" component={Home} exact/>
         <Route path="/account/register" component={Register} />

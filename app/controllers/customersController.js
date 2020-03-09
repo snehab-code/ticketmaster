@@ -2,6 +2,7 @@ const Customer = require('../models/customer')
 const Ticket = require('../models/ticket')
 
 module.exports.list = (req,res) => {
+    console.log(req.headers, req.user)
     Customer.find({user: req.user._id})
         .then(customers => {
             res.json(customers)
@@ -14,6 +15,7 @@ module.exports.list = (req,res) => {
 module.exports.create = (req, res) => {
     const body = req.body
     const customer = new Customer(body)
+    customer.user = req.user._id
     customer.save()
         .then(customer => {
             res.json(customer)

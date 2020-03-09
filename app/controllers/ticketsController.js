@@ -3,7 +3,7 @@ const Customer = require('../models/customer')
 const sendEmail = require('../tasks/sendEmail')
 
 module.exports.list = (req, res) => {
-    Ticket.find({user: req.user._id}).populate('department', ['_id', 'name']).populate('customer', ['_id', 'name']).populate({path: 'employees._id', model: 'Employee'})
+    Ticket.find({user: req.user._id}).populate('department', ['_id', 'name']).populate('customer', ['_id', 'name']).populate({path: 'employees', model: 'Employee'})
         .then(tickets => {
             res.json(tickets)
         })
@@ -15,6 +15,7 @@ module.exports.list = (req, res) => {
 module.exports.create = (req, res) => {
     const body = req.body
     const ticket = new Ticket(body)
+    ticket.user = req.user._id
     ticket.save()
         .then(ticket => {
             Customer.findOne({_id: ticket.customer})

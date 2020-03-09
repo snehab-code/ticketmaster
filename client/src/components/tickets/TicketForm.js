@@ -1,5 +1,5 @@
 import React from 'react'
-import axios from '../../config/axios'
+import {connect} from 'react-redux'
 
 class TicketForm extends React.Component{
 
@@ -7,9 +7,6 @@ class TicketForm extends React.Component{
         super(props)
         this.state = {
             code: this.props.code ? this.props.code : '',
-            customers: [],
-            departments: [],
-            employees: [],
             customer: this.props.customer? this.props.customer: '',
             department: this.props.department? this.props.department: '',
             employee: [],
@@ -18,42 +15,9 @@ class TicketForm extends React.Component{
         }
     }
 
-    componentDidMount() {
-        axios.all([
-            axios.get('http://localhost:3030/customers', {
-                headers: {
-                    'x-auth': localStorage.getItem('authToken')
-                }
-            }),
-            axios.get('http://localhost:3030/departments', {
-                headers: {
-                    'x-auth': localStorage.getItem('authToken')
-                }
-            })
-        ])
-        .then(axios.spread((customer, dept) => {
-            this.setState({customers: customer.data, departments: dept.data})
-        }))
-        .catch(err => alert(err))
-    }
-
     handleChange = (e) => {
         this.setState({[e.target.name]: e.target.value})
         // const selectoptions = [...event.target.options].filter(o => o.selected).map(o => o.value)
-    }
-
-    handleDeptChange = (e) => {
-        const department = e.target.value
-        this.setState({department})
-        axios.get('http://localhost:3030/employees?', {
-            headers: {
-                'x-auth': localStorage.getItem('authToken')
-            }
-        })
-        .then(response => {
-            const employees = response.data.filter(emp => emp.department._id === department)
-            this.setState({employees})
-        })
     }
 
     handleMultiSelect = (e) => {
@@ -80,7 +44,6 @@ class TicketForm extends React.Component{
     }
 
     render() {
-        console.log(this.props.priority)
         return (
             <form onSubmit={this.handleSubmit}>
                 <label htmlFor="code">Code</label>
@@ -92,7 +55,7 @@ class TicketForm extends React.Component{
                 <select name="customer" id="customer" value={this.state.customer} onChange={this.handleChange}>
                     <option>select</option>
                     {
-                        this.state.customers.map(customer => {
+                        this.props.customers.map(customer => {
                             return <option key={customer._id} value={customer._id}>{customer.name}</option>
                         })
                     }
@@ -102,10 +65,10 @@ class TicketForm extends React.Component{
                 
                 <br/>
                 <label htmlFor="department">Department</label>
-                <select name="department" id="department" value={this.state.department} onChange={this.handleDeptChange}>
+                <select name="department" id="department" value={this.state.department} onChange={this.handleChange}>
                     <option>select</option>
                     {
-                        this.state.departments.map(department => {
+                        this.props.departments.map(department => {
                             return <option key={department._id} value={department._id}>{department.name}</option>
                         })
                     }
@@ -118,7 +81,7 @@ class TicketForm extends React.Component{
                 <select multiple={true} name="employee" id="employee" onChange={this.handleMultiSelect}>
                     <option>select</option>
                     {
-                        this.state.employees.map(employee => {
+                        this.props.employees.filter(emp => emp.department._id == this.state.department).map(employee => {
                             return <option key={employee._id} value={employee._id}>{employee.name}</option>
                         })
                     }
@@ -147,4 +110,12 @@ class TicketForm extends React.Component{
     }
 }
 
-export default TicketForm
+const mapStateToProps = (state) => {
+    return {
+        departments: state.departments,
+        employees: state.employees,
+        customers: state.customers
+    }
+}
+
+export default connect(mapStateToProps)(TicketForm)

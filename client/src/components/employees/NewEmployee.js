@@ -1,33 +1,20 @@
 import React from 'react'
-import axios from '../../config/axios'
 import EmployeeForm from './EmployeeForm'
+import {connect} from 'react-redux'
+import {startPostEmployee} from '../../actions/employees'
 
-class NewEmployee extends React.Component {
+function EmployeeNew(props){
 
-    handleSubmit = (formData) => {
-        axios.post('/employees/', formData, {
-            headers: {
-                'x-auth': localStorage.getItem('authToken')
-            }
-        })
-        .then(response => {
-            if (response.data.errors) {
-                alert(response.data.message)
-            } else { 
-                this.props.history.push('/employees')
-            }
-        })
+    const handleSubmit = (formData) => {
+        props.dispatch(startPostEmployee(formData, props.history))
     }
 
-    render() {
-        console.log(this.props)
-        return (
-            <div>
-                <h1>Add Employee</h1>
-                <EmployeeForm handleSubmit={this.handleSubmit} />
-            </div>
-        )
-    }
+    return (
+        <div>
+            <h1>Add Employee</h1>
+            <EmployeeForm handleSubmit={handleSubmit} />
+        </div>
+    )
 }
 
-export default NewEmployee
+export default connect()(EmployeeNew)

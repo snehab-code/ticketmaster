@@ -1,49 +1,27 @@
 import React from 'react'
 import EmployeeForm from './EmployeeForm'
-import axios from '../../config/axios'
+import {connect} from 'react-redux'
+import {idSelector} from '../../store/configureStore'
+import {startPutEmployee} from '../../actions/employees'
 
-class EmployeeEdit extends React.Component{
-    constructor(props) {
-        super(props)
-        this.state = {
-            employee: {}
-        }
+function EmployeeEdit(props){
+
+    const handleSubmit = (formData) => {
+        const id = props.match.params.id
+        props.dispatch(startPutEmployee(id,formData, props.history))
     }
+    return (
+        <div>
+            <h2>Edit Employee</h2>
+            {props.employee && props.employee.name && <EmployeeForm handleSubmit = {handleSubmit} {...props.employee} /> }
+        </div>
+    )
+}
 
-    componentDidMount() {
-        const id = this.props.match.params.id
-        axios.get(`employees/${id}`, {
-            headers: {
-                'x-auth': localStorage.getItem('authToken')
-            }
-        })
-        .then(response => {
-            const employee = response.data
-            console.log(employee)
-            this.setState({employee})
-        })
-        .catch(err => alert(err))
-    }
-
-    handleSubmit = (formData) => {
-        axios.put(`/employees/${this.state.employee._id}`, formData, {
-            headers: {
-                'x-auth': localStorage.getItem('authToken')
-            }
-        })
-        .then(() => {
-            this.props.history.push(`employees/${this.state.employee.id}`)
-        })
-    }
-
-    render() {
-        console.log(this.state)
-        return (
-            <div>
-                {this.state.employee.name? <EmployeeForm handleSubmit={this.handleSubmit} {...this.state.employee} /> : ''}
-            </div>
-        )
+const mapStateToProps = (state, props) => {
+    return {
+        employee: idSelector(state.employees, props.match.params.id)
     }
 }
 
-export default EmployeeEdit
+export default connect(mapStateToProps)(EmployeeEdit)

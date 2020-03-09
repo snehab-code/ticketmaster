@@ -1,43 +1,53 @@
 import React from 'react'
-import axios from '../../config/axios'
+import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
+import {startDeleteEmployee} from '../../actions/employees'
 
-class EmployeeList extends React.Component{
-    constructor() {
-        super()
-        this.state = {
-            employees: []
-        }
+function EmployeeList(props){
+
+    const handleDelete = (id) => {
+        props.dispatch(startDeleteEmployee(id))
     }
 
-    componentDidMount() {
-        axios.get('/employees/', {
-            headers: {
-                'x-auth': localStorage.getItem('authToken')
+    return (
+        <div className="col-md-12 text-center">
+            <h2>Employee List</h2>
+            <Link to="/employees/new"><button type="button" className="btn btn-primary mt-2 mb-3">Add employee</button></Link>
+            <table className="table border">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Mobile</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+            {
+                props.employees.map(employee => {
+                    return (
+                        <tr key={employee._id}>
+                        <td><Link to ={`/employees/${employee._id}`}>{employee.name}</Link></td>
+                        <td>{employee.mobile}</td> 
+                        <td>{employee.email}</td>
+                        <td>{employee.department.name}</td>
+                        <td className="d-flex justify-content-around"><Link className="btn btn-primary" to={`/employees/edit/${employee._id}`}>edit</Link>
+                        <button className="btn btn-danger" onClick={() => {handleDelete(employee._id)}}>Remove</button></td>
+                        </tr>
+                    )
+                })
             }
-        })
-        .then(response => {
-            const employees = response.data
-            this.setState({employees})
-        })
-    }
+                </tbody>
+            </table>
+        </div>
+    )
+}
 
-    render() {
-        console.log(this.state)
-        return (
-            <div>
-                <h1>Employees - {this.state.employees.length}</h1>
-                <ul>
-                    {
-                        this.state.employees.map(employee => {
-                            return <li key={employee._id}>{employee.name} - {employee.department.name} - <Link to={`/employees/${employee._id}`}>Show</Link></li>
-                        })
-                    }
-                </ul>
-                <Link to="/employees/new">Add an Employee</Link>
-            </div>
-        )
+const mapStateToProps = (state) => {
+    return {
+        employees: state.employees
     }
 }
 
-export default EmployeeList
+export default connect(mapStateToProps)(EmployeeList)

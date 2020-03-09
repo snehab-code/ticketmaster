@@ -15,6 +15,7 @@ module.exports.list = (req,res) => {
 module.exports.create = (req, res) => {
     const body = req.body
     const department = new Department(body)
+    department.user = req.user._id
     department.save()
         .then(department => {
             res.json(department)

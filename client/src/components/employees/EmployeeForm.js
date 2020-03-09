@@ -1,5 +1,5 @@
 import React from 'react'
-import axios from '../../config/axios'
+import {connect} from 'react-redux'
 
 class EmployeeForm extends React.Component {
     constructor(props) {
@@ -8,21 +8,8 @@ class EmployeeForm extends React.Component {
             name: this.props.name? this.props.name : '',
             email: this.props.email? this.props.email : '',
             mobile: this.props.mobile ? this.props.mobile : '',
-            department: this.props.department ? this.props.department._id : '',
-            departments: []
+            department: this.props.department ? this.props.department._id : ''
         }
-    }
-
-    componentDidMount() {
-        axios.get('/departments/', {
-            headers: {
-                'x-auth': localStorage.getItem('authToken')
-            }
-        })
-        .then(response => {
-            const departments = response.data
-            this.setState({departments})
-        })
     }
 
     handleChange = (e) => {
@@ -61,7 +48,7 @@ class EmployeeForm extends React.Component {
                     <select name="department" value={this.state.department} onChange={this.handleChange}>
                         <option></option>
                         {
-                            this.state.departments.map(department => {
+                            this.props.departments.map(department => {
                                 return (
                                     <option key={department._id} value={department._id}>{department.name}</option>
                                 )
@@ -76,4 +63,10 @@ class EmployeeForm extends React.Component {
     }
 }
 
-export default EmployeeForm
+const mapStateToProps = (state) => {
+    return {
+        departments: state.departments
+    }
+}
+
+export default connect(mapStateToProps)(EmployeeForm)

@@ -1,55 +1,38 @@
 import React from 'react'
-import axios from '../../config/axios'
-import DepartmentForm from './DepartmentForm'
+import {connect} from 'react-redux'
+import {idSelector} from '../../store/configureStore'
+import {ticketSelector} from '../../reducers/ticketsReducer'
 
-class DepartmentShow extends React.Component{
-    constructor() {
-        super()
-        this.state = {
-            department: {},
-            edit: false
-        }
-    }
-
-    componentDidMount() {
-        axios.get(`/departments/${this.props.match.params.id}`, {
-            headers: {
-                'x-auth': localStorage.getItem('authToken')
+function DepartmentShow(props) {
+    console.log(props)
+    return( 
+        <div className="col-12">
+        <div className="p-2 bg-light text-center">
+            <h1>{ props.department && props.department.name}</h1>
+        </div>
+        <div className="list-group text-center">
+            {
+                props.tickets[0] ? 
+                props.tickets.map(ticket => {
+                    return (
+                        <button type="button" class="list-group-item list-group-item-action">{
+                            ticket.code
+                        }</button>
+                    )
+                })
+                :
+                'No tickets yet'
             }
-        })
-        .then(response => {
-            console.log(response)
-            const department = response.data
-            this.setState({department})
-        })
-    }
+        </div>
+        </div>
+    )
+}
 
-    handleEdit = () => {
-        this.setState({edit: true})
-    }
-
-    handleSubmit = (formData) => {
-        axios.put(`/departments/${this.props.match.params.id}`, formData, {
-            headers: {
-                'x-auth': localStorage.getItem('authToken')
-            }
-        })
-        .then(response => {
-            const department = response.data
-            this.setState({department, edit: false})
-        })
-    }
-
-    render() {
-        console.log(this.state)
-        return (
-            <div>
-                <h1>Name - {this.state.department.name}</h1>    
-                <button onClick={this.handleEdit}>Edit</button>
-                {this.state.edit ? <DepartmentForm handleSubmit = {this.handleSubmit} name = {this.state.department.name}/> : ''}
-            </div>
-        )
+const mapStateToProps = (state, props) => {
+    return {
+        department: idSelector(state.departments, props.match.params.id),
+        tickets: ticketSelector(state.tickets, {type:'CUSTOMER', payload: props.match.params.id})
     }
 }
 
-export default DepartmentShow
+export default connect(mapStateToProps)(DepartmentShow)

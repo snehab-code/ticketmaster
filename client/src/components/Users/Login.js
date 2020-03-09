@@ -24,10 +24,10 @@ class Login extends React.Component {
         }
         axios.post('http://localhost:3030/users/login', formData)
             .then(response => {
-                if(response.data.error) {
-                    alert(response.data.error)
+                if(response.data.notice) {
+                    alert(response.data.notice)
                 } else {
-                    const token = response.data.token
+                    const token = response.data
                     localStorage.setItem('authToken', token)
                     this.props.history.push('/')
                     window.location.reload()

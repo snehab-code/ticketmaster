@@ -23,7 +23,7 @@ const ticketSchema = new Schema({
         ref: 'Department'
     },
     employees: {
-        type: [{"_id": Schema.Types.ObjectId}],
+        type: [Schema.Types.ObjectId],
         ref: 'Employee',
         required: true
     },

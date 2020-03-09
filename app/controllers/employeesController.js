@@ -14,6 +14,7 @@ module.exports.list = (req, res) => {
 module.exports.create = (req, res) => {
     const body = req.body
     const employee = new Employee(body)
+    employee.user = req.user._id
     employee.save()
         .then(employee => {
             res.json(employee)

@@ -1,52 +1,27 @@
 import React from 'react'
-import axios from '../../config/axios'
 import CustomerForm from './Form'
+import {connect} from 'react-redux'
+import {idSelector} from '../../store/configureStore'
+import {startPutCustomer} from '../../actions/customers'
 
-class CustomerEdit extends React.Component {
+function CustomerEdit(props){
 
-    constructor() {
-        super()
-        this.state = {
-            customer: {}
-        }
+    const handleSubmit = (formData) => {
+        const id = props.match.params.id
+        props.dispatch(startPutCustomer(id,formData, props.history))
     }
+    return (
+        <div>
+            <h2>Edit Customer</h2>
+            {props.customer && props.customer.name && <CustomerForm handleSubmit = {handleSubmit} {...props.customer} /> }
+        </div>
+    )
+}
 
-    componentDidMount() {
-        const id = this.props.match.params.id
-        axios.get(`/customers/${id}`, {
-            headers: {
-                'x-auth': localStorage.getItem('authToken')
-            }
-        })
-        .then(response => {
-            const customer = response.data
-            this.setState({customer})
-        })
-        .catch(err => alert(err))
-    }
-
-    
-    handleSubmit = (formData) => {
-        const id = this.props.match.params.id
-        axios.put(`/customers/${id}`, formData, {
-            headers: {
-                'x-auth': localStorage.getItem('authToken')
-            }
-        })
-        .then(() => {
-            this.props.history.push('/customers')
-        })
-    }
-
-
-    render() {
-        return (
-            <div>
-                <h2>Edit Customer</h2>
-                {this.state.customer.name && <CustomerForm handleSubmit = {this.handleSubmit} {...this.state.customer} /> }
-            </div>
-        )
+const mapStateToProps = (state, props) => {
+    return {
+        customer: idSelector(state.customers, props.match.params.id)
     }
 }
 
-export default CustomerEdit
+export default connect(mapStateToProps)(CustomerEdit)

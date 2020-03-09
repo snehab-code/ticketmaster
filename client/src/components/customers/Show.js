@@ -3,17 +3,20 @@ import {connect} from 'react-redux'
 import {idSelector} from '../../store/configureStore'
 import {ticketSelector} from '../../reducers/ticketsReducer'
 
-function EmployeeShow(props) {
-    console.log(props)
+function CustomerShow(props) {
+    const redirect = (id) => {
+        props.history.push(`/tickets/${id}`)
+    }
+
     return( 
         <div className="col-12">
-        <div className="bg-light p-3 text-center">
-            <h1>{ props.employee && props.employee.name}</h1>
+        <div className="jumbotron text-center">
+            <h1>{ props.customer && props.customer.name}</h1>
             {
-                props.employee && 
-                    <>email: {props.employee.email}
+                props.customer && 
+                    <>email: {props.customer.email}
                     <br/>
-                    phone: {props.employee.mobile}
+                    phone: {props.customer.mobile}
                     </>
                       
             }
@@ -23,7 +26,9 @@ function EmployeeShow(props) {
                 props.tickets[0] ? 
                 props.tickets.map(ticket => {
                     return (
-                        <button type="button" class="list-group-item list-group-item-action">Dapibus ac facilisis in</button>
+                        <button key={ticket._id} onClick={() => redirect(ticket._id)} type="button" class="list-group-item list-group-item-action">
+                            {ticket.code} - {ticket.isResolved ? "Resolved" : "Pending"}
+                        </button>
                     )
                 })
                 :
@@ -36,9 +41,9 @@ function EmployeeShow(props) {
 
 const mapStateToProps = (state, props) => {
     return {
-        employee: idSelector(state.employees, props.match.params.id),
+        customer: idSelector(state.customers, props.match.params.id),
         tickets: ticketSelector(state.tickets, {type:'CUSTOMER', payload: props.match.params.id})
     }
 }
 
-export default connect(mapStateToProps)(EmployeeShow)
+export default connect(mapStateToProps)(CustomerShow)

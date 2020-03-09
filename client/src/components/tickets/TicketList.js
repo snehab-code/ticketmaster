@@ -1,89 +1,67 @@
 import React from 'react'
-import axios from '../../config/axios'
+import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
+import {startDeleteTicket, startPutTicket} from '../../actions/tickets'
 
-class TicketList extends React.Component{
+function TicketList(props){
 
-    constructor() {
-        super()
-        this.state = {
-            tickets: [],
-            departments: [],
-            employees: []
+    const handleDelete = (id) => {
+        props.dispatch(startDeleteTicket(id))
+    }
+
+    const handleResolved = (ticket) => {
+        const formData = {
+            isResolved: !ticket.isResolved
         }
+        props.dispatch(startPutTicket(ticket._id, formData))
     }
 
-    componentDidMount() {
-        axios.all([
-            axios.get('http://localhost:3030/tickets', {
-                headers: {
-                    'x-auth': localStorage.getItem('authToken')
-                }
-            }),
-            axios.get('http://localhost:3030/departments', {
-                headers: {
-                    'x-auth': localStorage.getItem('authToken')
-                }
-            }),
-            axios.get('http://localhost:3030/employees', {
-                headers: {
-                    'x-auth': localStorage.getItem('authToken')
-                }
-            })
-        ])
-        .then(axios.spread((ticket, dept, emp) => {
-            this.setState({tickets: ticket.data, departments: dept.data, employees: emp.data})
-        }))
-        .catch(err => alert(err))
-    }
-
-    handleRemove = (id) => {
-        axios.delete(`http://localhost:3030/tickets/${id}`, {
-            headers: {
-                'x-auth': localStorage.getItem('authToken')
+    return (
+        <div className="col-md-12 text-center">
+            <h2>Ticket List</h2>
+            <Link to="/tickets/new"><button type="button" className="btn btn-primary mt-2 mb-3">Add ticket</button></Link>
+            <table className="table border">
+                <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Department</th>
+                    <th>Employee</th>
+                    <th>Customer</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+            {
+                props.tickets.map(ticket => {
+                    return (
+                        <tr key={ticket._id}>
+                        <td className="align-middle"><Link to ={`/tickets/${ticket._id}`}>{ticket.code}</Link></td>
+                        <td className="align-middle">{ticket.department.name}</td> 
+                        <td className="align-middle">{ticket.employees.map(emp => {
+                            return emp.name + ','
+                        })}</td>
+                        <td className="align-middle">{ticket.customer.name}</td>
+                        <td className="align-middle">{ticket.isResolved ? <button className="btn text-success" onClick={() => {handleResolved(ticket)}}>Resolved</button> : <button className="btn text-warning" onClick={() => {handleResolved(ticket)}}>Pending</button> }</td>
+                        <td className="align-middle">{ticket.priority}</td>
+                        <td className="d-flex justify-content-around"><Link className="btn btn-primary" to={`/tickets/edit/${ticket._id}`}>edit</Link>
+                        <button className="btn btn-danger" onClick={() => {handleDelete(ticket._id)}}>Remove</button>
+                        </td>
+                        </tr>
+                    )
+                })
             }
-        })
-        .then(response => {
-            this.setState(prevState => {
-                return {tickets: prevState.tickets.filter(ticket => ticket._id !== response.data._id)}
-            })
-        })
-    }
+                </tbody>
+            </table>
+        </div>
+    )
+}
 
-    handleEmp = (emps) => {
-        console.log()
-    }
-
-    render() {
-        return (
-            <div>
-                <h1>Tickets - {this.state.tickets.length}</h1>
-                <ul>
-                    {
-                        this.state.tickets.map(ticket => {
-                            return( 
-                            <li key={ticket._id}>
-                                {ticket.code} - {ticket.priority} - {this.state.departments.find(dept => dept._id === ticket.department).name}
-                                <span>{
-                                    ticket.employees.map(employee => {
-                                        return <span key={employee._id}> {this.state.employees.find(emp => {
-                                            return emp._id === employee._id 
-                                        }).name}, </span>
-                                    })
-                                }</span>
-                                {'  '}
-                                <Link to={`/tickets/${ticket._id}`}>Show</Link>
-                                <button onClick={() => this.handleRemove(ticket._id)}>remove</button>
-                                <Link to={`/tickets/edit/${ticket._id}`}><button>Edit</button></Link>
-                            </li>
-                            )
-                        })
-                    }
-                </ul>
-                <Link to="/tickets/new">Add ticket</Link>
-            </div>
-        )
+const mapStateToProps = (state) => {
+    return {
+        tickets: state.tickets
     }
 }
 
-export default TicketList
+export default connect(mapStateToProps)(TicketList)

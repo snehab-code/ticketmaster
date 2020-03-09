@@ -22,9 +22,10 @@ class DepartmentForm extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                    <input type = "text" name="name" value = {this.state.name} onChange={this.handleChange}/>
-                    <input type="submit" />
+            <form className="col-md-12 text-center" onSubmit={this.handleSubmit}>
+                    <h3>Add</h3>
+                    <input className="mb-2 form-control" type = "text" name="name" value = {this.state.name} onChange={this.handleChange}/>
+                    <input className="btn btn-primary btn-sm btn-block" type="submit" />
             </form>
         )
     }

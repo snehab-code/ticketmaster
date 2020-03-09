@@ -12,10 +12,10 @@ function Navigation(props) {
 
     return (
         <>
-        <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+        <nav className="navbar navbar-expand-md navbar-dark bg-primary d-flex">
             <a className ="navbar-brand" href="/">Ticket Master</a>
-            <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div className="navbar-nav">
+            <div className="navbar-scroll col-12" id="navbarNavAltMarkup">
+                <div className="navbar-nav bd-navbar-nav flex-row">
                 {
                   !localStorage.getItem('authToken') ? 
                 <>
@@ -24,12 +24,16 @@ function Navigation(props) {
                 </>
                   : 
                 <>
+                  <div className="navbar-nav bd-navbar-nav flex-row col-9">
                   <Link className="nav-item nav-link active" to="/">Home </Link>
                   <Link className="nav-item nav-link" to="/customers"> Customers </Link>
                   <Link className="nav-item nav-link" to="/departments"> Departments </Link>
                   <Link className="nav-item nav-link" to="/employees"> Employees </Link>
                   <Link className="nav-item nav-link" to="/tickets"> Tickets </Link>
+                  </div>
+                  <div className="col-3">
                   <Link className="nav-item nav-link" to="#" onClick={handleLogout}>Logout</Link>
+                  </div>
                 </>
                 }
                 </div>
