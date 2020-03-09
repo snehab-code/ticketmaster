@@ -11,8 +11,8 @@ function EmployeeEdit(props){
         props.dispatch(startPutEmployee(id,formData, props.history))
     }
     return (
-        <div>
-            <h2>Edit Employee</h2>
+        <div className="border p-5 rounded">
+            <h1 className="text-center mb-3">Edit Employee</h1>
             {props.employee && props.employee.name && <EmployeeForm handleSubmit = {handleSubmit} {...props.employee} /> }
         </div>
     )

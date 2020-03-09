@@ -7,8 +7,8 @@ class TicketForm extends React.Component{
         super(props)
         this.state = {
             code: this.props.code ? this.props.code : '',
-            customer: this.props.customer? this.props.customer: '',
-            department: this.props.department? this.props.department: '',
+            customer: this.props.customer? this.props.customer._id: '',
+            department: this.props.department? this.props.department._id: '',
             employee: [],
             message: this.props.message? this.props.message: '',
             priority: this.props.priority ? this.props.priority : ''
@@ -44,41 +44,53 @@ class TicketForm extends React.Component{
     }
 
     render() {
+        console.log('>_>')
         return (
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={this.handleSubmit} className="form-group">
                 <label htmlFor="code">Code</label>
-                <input type="text" name="code" id="code" value={this.state.code} onChange={this.handleChange} />
+                <input className="form-control" type="text" name="code" id="code" value={this.state.code} onChange={this.handleChange} />
+                <label htmlFor="message">Message</label>
+                <textarea className="form-control" name="message" id="message" value={this.state.message} onChange={this.handleChange} />
                 
-                
-                <br/>
+                <div className="form-row">
+                <div className="col-md-6">
                 <label htmlFor="customer">Customer </label>
-                <select name="customer" id="customer" value={this.state.customer} onChange={this.handleChange}>
+                <select className="form-control" name="customer" id="customer" value={this.state.customer} onChange={this.handleChange}>
                     <option>select</option>
                     {
                         this.props.customers.map(customer => {
                             return <option key={customer._id} value={customer._id}>{customer.name}</option>
                         })
                     }
-
                 </select>
-                
-                
-                <br/>
+                </div>
+                <div className="col-md-6 d-flex flex-column">
+                <span>Priority</span>
+                <div className="form-check form-check-inline flex-grow-1">
+                <input className="form-check-input" type="radio" name="priority" id="high" value="high" checked={this.state.priority === "high"? true : false} onChange={this.handleChange} />
+                <label className="form-check-label" htmlFor="high">High</label>
+                <input className="form-check-input" type="radio" name="priority" id="medium" value="medium" checked={this.state.priority === "medium"? true : false} onChange={this.handleChange} />
+                <label className="form-check-label" htmlFor="medium">Medium</label>
+                <input className="form-check-input" type="radio" name="priority" id="low" value="low" checked={this.state.priority === "low"? true : false} onChange={this.handleChange} />
+                <label className="form-check-label" htmlFor="low">Low</label>
+                </div>
+                </div>
+                </div>
+                <div className="form-row">
+                <div className="col-md-6">
                 <label htmlFor="department">Department</label>
-                <select name="department" id="department" value={this.state.department} onChange={this.handleChange}>
+                <select className="form-control" name="department" id="department" value={this.state.department} onChange={this.handleChange}>
                     <option>select</option>
                     {
                         this.props.departments.map(department => {
                             return <option key={department._id} value={department._id}>{department.name}</option>
                         })
                     }
-
                 </select>
-                <br/>
-                
-
+                </div>
+                <div className="col-md-6">
                 <label htmlFor="employee">Employee </label>
-                <select multiple={true} name="employee" id="employee" onChange={this.handleMultiSelect}>
+                <select className="form-control" multiple={true} name="employee" id="employee" onChange={this.handleMultiSelect}>
                     <option>select</option>
                     {
                         this.props.employees.filter(emp => emp.department._id == this.state.department).map(employee => {
@@ -86,25 +98,9 @@ class TicketForm extends React.Component{
                         })
                     }
                 </select>
-                
-                <br/>
-                <label htmlFor="message">Message</label>
-                <textarea name="message" id="message" value={this.state.message} onChange={this.handleChange} />
-                
-                
-                <br/>
-                Priority: <br/>
-                <input type="radio" name="priority" id="high" value="high" checked={this.state.priority === "high"? true : false} onChange={this.handleChange} />
-                <label htmlFor="high">High</label><br/>
-                
-                <input type="radio" name="priority" id="medium" value="medium" checked={this.state.priority === "medium"? true : false} onChange={this.handleChange} />
-                <label htmlFor="medium">Medium</label><br/>
-                
-                <input type="radio" name="priority" id="low" value="low" checked={this.state.priority === "low"? true : false} onChange={this.handleChange} />
-                <label htmlFor="low">Low</label><br/>
-
-                
-                <input type="submit" value="add ticket" />
+                </div>
+                </div>
+                <input className="btn btn-primary btn-block" type="submit" value="add ticket" />
             </form>
         )
     }

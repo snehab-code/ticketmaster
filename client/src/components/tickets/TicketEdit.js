@@ -1,47 +1,30 @@
 import React from 'react'
-import axios from '../../config/axios'
 import TicketForm from './TicketForm'
+import {connect} from 'react-redux'
+import {idSelector} from '../../store/configureStore'
+import {startPutTicket} from '../../actions/tickets'
 
-class TicketEdit extends React.Component{
-    constructor() {
-        super()
-        this.state = {
-            ticket: {}
-        }
+function TicketEdit(props){
+
+    console.log('ticket props', props)
+
+    const handleSubmit = (formData) => {
+        const id = props.match.params.id
+        props.dispatch(startPutTicket(id,formData, props.history))
     }
 
-    componentDidMount() {
-        axios.get(`tickets/${this.props.match.params.id}`, {
-            headers: {
-                'x-auth': localStorage.getItem('authToken')
-            }
-        })
-        .then(response => {
-            const ticket = response.data
-            this.setState({ticket})
-        })
-        .catch(error => alert(error))
-    }
+    return (
+        <div>
+            <h2>Edit Ticket</h2>
+            {props.ticket && props.ticket._id && <TicketForm handleSubmit = {handleSubmit} {...props.ticket} /> }
+        </div>
+    )
+}
 
-    handleSubmit = (formData) => {
-        axios.put(`tickets/${this.props.match.params.id}`, formData, {
-            headers: {
-                'x-auth': localStorage.getItem('authToken')
-            }
-        })
-        .then(() => {
-            this.props.history.push('/tickets')
-        })
-    }
-
-    render() {
-        return (
-            <div>
-                <h1>Edit Ticket</h1>
-                {this.state.ticket.code ? <TicketForm handleSubmit={this.handleSubmit} {...this.state.ticket}/> : ''}
-            </div>
-        )
+const mapStateToProps = (state, props) => {
+    return {
+        ticket: idSelector(state.tickets, props.match.params.id)
     }
 }
 
-export default TicketEdit
+export default connect(mapStateToProps)(TicketEdit)

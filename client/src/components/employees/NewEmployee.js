@@ -10,8 +10,8 @@ function EmployeeNew(props){
     }
 
     return (
-        <div>
-            <h1>Add Employee</h1>
+        <div className="border p-5 rounded">
+            <h1 className="text-center mb-3">Add Employee</h1>
             <EmployeeForm handleSubmit={handleSubmit} />
         </div>
     )

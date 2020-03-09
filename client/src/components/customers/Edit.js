@@ -11,8 +11,8 @@ function CustomerEdit(props){
         props.dispatch(startPutCustomer(id,formData, props.history))
     }
     return (
-        <div>
-            <h2>Edit Customer</h2>
+        <div className="border p-5 rounded">
+            <h1 className="text-center mb-3">Edit Customer</h1>
             {props.customer && props.customer.name && <CustomerForm handleSubmit = {handleSubmit} {...props.customer} /> }
         </div>
     )

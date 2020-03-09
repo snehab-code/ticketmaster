@@ -30,12 +30,20 @@ export const startGetTickets = () => {
     }
 }
 
-export const startPostTicket = (formData) => {
+export const startPostTicket = (formData, history) => {
     return (dispatch) => {
         axios.post('/tickets', formData)
             .then(response => {
-                const ticket = response.data
-                dispatch(addTicket(ticket))
+                if (response.data.errors) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: response.data.message,
+                    })
+                } else {
+                    const ticket = response.data
+                    dispatch(addTicket(ticket))
+                    history.push('/tickets')
+                }
             })
             .catch(err => {
                 Swal.fire({
@@ -48,13 +56,21 @@ export const startPostTicket = (formData) => {
     }
 }
 
-export const startPutTicket = (id, formData) => {
+export const startPutTicket = (id, formData, history) => {
     return (dispatch) => {
         axios.put(`/tickets/${id}`, formData)
             .then(response=>{
-                const ticket = response.data
-                const id = ticket._id
-                dispatch(updateTicket(id, ticket))
+                if (response.data.errors) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: response.data.message,
+                    })
+                } else {
+                    const ticket = response.data
+                    const id = ticket._id
+                    dispatch(updateTicket(id, ticket))
+                    history.push('/tickets')
+                }
             })
             .catch(err => {
                 Swal.fire({

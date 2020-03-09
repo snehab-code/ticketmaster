@@ -34,10 +34,17 @@ export const startPostEmployee = (formData, history) => {
     return (dispatch, getState) => {
         axios.post('/employees', formData)
             .then(response => {
-                const employee = response.data
-                employee.department = getState().departments.find(dept => dept._id == employee.department)
-                dispatch(addEmployee(employee))
-                history.push('/employees')
+                if (response.data.errors) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: response.data.message,
+                    })
+                } else {
+                    const employee = response.data
+                    employee.department = getState().departments.find(dept => dept._id == employee.department)
+                    dispatch(addEmployee(employee))
+                    history.push('/employees')
+                }
             })
             .catch(err => {
                 Swal.fire({
@@ -54,11 +61,18 @@ export const startPutEmployee = (id, formData, history) => {
     return (dispatch, getState) => {
         axios.put(`/employees/${id}`, formData)
             .then(response=>{
-                const employee = response.data
-                employee.department = getState().departments.find(dept => dept._id == employee.department)
-                const id = employee._id
-                dispatch(updateEmployee(id, employee))
-                history.push('/employees')
+                if (response.data.errors) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: response.data.message,
+                    })
+                } else {
+                    const employee = response.data
+                    employee.department = getState().departments.find(dept => dept._id == employee.department)
+                    const id = employee._id
+                    dispatch(updateEmployee(id, employee))
+                    history.push('/employees')
+                }
             })
             .catch(err => {
                 Swal.fire({

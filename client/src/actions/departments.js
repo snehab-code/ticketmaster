@@ -34,8 +34,15 @@ export const startPostDepartment = (formData) => {
     return (dispatch) => {
         axios.post('/departments', formData)
             .then(response => {
-                const department = response.data
-                dispatch(addDepartment(department))
+                if (response.data.errors) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: response.data.message,
+                    })
+                } else {
+                    const department = response.data
+                    dispatch(addDepartment(department))
+                }
             })
             .catch(err => {
                 Swal.fire({
@@ -52,9 +59,16 @@ export const startPutDepartment = (id, formData) => {
     return (dispatch) => {
         axios.put(`/departments/${id}`, formData)
             .then(response=>{
-                const department = response.data
-                const id = department._id
-                dispatch(updateDepartment(id, department))
+                if (response.data.errors) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: response.data.message,
+                    })
+                } else {
+                    const department = response.data
+                    const id = department._id
+                    dispatch(updateDepartment(id, department))
+                }
             })
             .catch(err => {
                 Swal.fire({

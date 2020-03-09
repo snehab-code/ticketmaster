@@ -30,22 +30,29 @@ class EmployeeForm extends React.Component {
     render() {
         console.log('props', this.props)
         return (
-            <div>
-                <form onSubmit={this.handleSubmit}>
-                    <label htmlFor="name">Name </label>
-                    <input type="text" name="name" value = {this.state.name} id="name" onChange = {this.handleChange}></input>
-                    <br />
-
-                    <label htmlFor="email">Email </label>
-                    <input type="text" name="email" value = {this.state.email} id="email" onChange = {this.handleChange}></input>
-                    <br />
-
-                    <label htmlFor="mobile">mobile </label>
-                    <input type="text" name="mobile" value = {this.state.mobile} id="mobile" onChange = {this.handleChange}></input>
-                    <br />
-
-                    <label>Department</label>
-                    <select name="department" value={this.state.department} onChange={this.handleChange}>
+            <form onSubmit={this.handleSubmit}>
+                <div className="form-group row">
+                    <label className="col-sm-2 col-form-label" htmlFor="name">Name </label>
+                    <div className="col-sm-10">
+                    <input className="form-control" type="text" name="name" value = {this.state.name} id="name" onChange = {this.handleChange}></input>
+                    </div>
+                </div>
+                <div className="form-group row">
+                    <label className="col-sm-2 col-form-label" htmlFor="email">Email </label>
+                    <div className="col-sm-10">
+                    <input className="form-control" name="email" value = {this.state.email} id="email" onChange = {this.handleChange}></input>
+                    </div>
+                </div>
+                <div className="form-group row">
+                    <label className="col-sm-2 col-form-label" htmlFor="mobile">mobile </label>
+                    <div className="col-sm-10">
+                    <input className="form-control" type="text" name="mobile" value = {this.state.mobile} id="mobile" onChange = {this.handleChange}></input>
+                    </div>
+                </div>
+                <div className="form-group row">
+                    <label className="col-sm-2 col-form-label" htmlFor="department">Department</label>
+                    <div className="col-sm-10">
+                    <select className="form-control" name="department" value={this.state.department} onChange={this.handleChange}>
                         <option></option>
                         {
                             this.props.departments.map(department => {
@@ -55,10 +62,10 @@ class EmployeeForm extends React.Component {
                             })
                         }
                     </select>
-
-                    <input type="submit" />
+                    </div>
+                </div>
+                    <input className="btn btn-block btn-primary" type="submit" />
                 </form>
-            </div>
         )
     }
 }

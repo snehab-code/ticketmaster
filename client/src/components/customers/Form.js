@@ -29,20 +29,27 @@ class CustomerForm extends React.Component {
 
     render() {
         return (
-            <div>
-                <form onSubmit={this.handleSubmit}>
-                    <label htmlFor="name">Name</label>
-                    <input type="text" value={this.state.name} onChange={this.handleChange} id="name" />
-                    <br/>
-                    <label htmlFor="email">Email</label>
-                    <input type="text" value={this.state.email} onChange={this.handleChange} id="email" />
-                    <br/>
-                    <label htmlFor="mobile">mobile</label>
-                    <input type="text" value={this.state.mobile} onChange={this.handleChange} id="mobile" />
-                    <br/>
-                    <input type="submit" />
-                </form>
-            </div>
+            <form onSubmit={this.handleSubmit}>
+                <div className="form-group row">
+                    <label className="col-sm-2 col-form-label" htmlFor="name">Name</label>
+                    <div className="col-sm-10">
+                    <input className="form-control" type="text" value={this.state.name} onChange={this.handleChange} id="name" />
+                    </div>
+                </div>
+                <div className="form-group row">
+                    <label className="col-sm-2 col-form-label" htmlFor="email">Email</label>
+                    <div className="col-sm-10">
+                    <input className="form-control" type="text" value={this.state.email} onChange={this.handleChange} id="email" />
+                    </div>
+                </div>
+                <div className="form-group row">
+                    <label className="col-sm-2 col-form-label" htmlFor="mobile">mobile</label>
+                    <div className="col-sm-10">
+                    <input className="form-control" type="text" value={this.state.mobile} onChange={this.handleChange} id="mobile" />
+                    </div>
+                </div>
+                <input className="btn btn-block btn-primary" type="submit" />
+            </form>
         )
     }
 }

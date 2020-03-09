@@ -34,9 +34,16 @@ export const startPostCustomer = (formData, history) => {
     return (dispatch) => {
         axios.post('/customers', formData)
             .then(response => {
-                const customer = response.data
-                dispatch(addCustomer(customer))
-                history.push('/customers')
+                if (response.data.errors) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: response.data.message,
+                    })
+                } else {
+                    const customer = response.data
+                    dispatch(addCustomer(customer))
+                    history.push('/customers')
+                }
             })
             .catch(err => {
                 Swal.fire({
@@ -53,10 +60,17 @@ export const startPutCustomer = (id, formData, history) => {
     return (dispatch) => {
         axios.put(`/customers/${id}`, formData)
             .then(response=>{
-                const customer = response.data
-                const id = customer._id
-                dispatch(updateCustomer(id, customer))
-                history.push('/customers')
+                if (response.data.errors) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: response.data.message,
+                    })
+                } else {
+                    const customer = response.data
+                    const id = customer._id
+                    dispatch(updateCustomer(id, customer))
+                    history.push('/customers')
+                }
             })
             .catch(err => {
                 Swal.fire({

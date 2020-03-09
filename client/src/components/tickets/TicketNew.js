@@ -1,30 +1,20 @@
 import React from 'react'
-import axios from '../../config/axios'
 import TicketForm from './TicketForm'
+import {connect} from 'react-redux'
+import {startPostTicket} from '../../actions/tickets'
 
-class TicketNew extends React.Component{
-   
-    handleSubmit = (formData) => {
-        axios.post('/tickets/', formData, {
-            headers: {
-                'x-auth': localStorage.getItem('authToken')
-            }
-        })
-        .then(response => {
-            console.log(response)
-            this.props.history.push('/tickets')
-        })
-        .catch(err => alert(err))
+function TicketNew(props){
+
+    const handleSubmit = (formData) => {
+        props.dispatch(startPostTicket(formData, props.history))
     }
 
-    render() {
-        return (
-            <div>
-                <h1>Add a ticket</h1>
-                <TicketForm handleSubmit={this.handleSubmit} />
+    return (
+            <div className="col-md-6 border">
+                <h1 className="text-center">Add a ticket</h1>
+                <TicketForm handleSubmit={handleSubmit} />
             </div>
         )
-    }
 }
 
-export default TicketNew
+export default connect()(TicketNew)

@@ -9,7 +9,7 @@ function CustomerShow(props) {
     }
 
     return( 
-        <div className="col-12">
+        <div className="col-md-12">
         <div className="jumbotron text-center">
             <h1>{ props.customer && props.customer.name}</h1>
             {
