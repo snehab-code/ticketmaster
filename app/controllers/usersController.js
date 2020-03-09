@@ -26,8 +26,7 @@ module.exports.login = (req, res) => {
             return user.generateToken()
         })
         .then(token => {
-            // res.setHeader('x-auth', token).send({})
-            res.send(token)
+            res.send({token})
         })
         .catch(err => {
             res.send(err)

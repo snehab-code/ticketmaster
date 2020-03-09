@@ -6,16 +6,14 @@ import {startPutTicket} from '../../actions/tickets'
 
 function TicketEdit(props){
 
-    console.log('ticket props', props)
-
     const handleSubmit = (formData) => {
         const id = props.match.params.id
         props.dispatch(startPutTicket(id,formData, props.history))
     }
 
     return (
-        <div>
-            <h2>Edit Ticket</h2>
+        <div className="col-md-6 border rounded">
+                <h1 className="text-center">Edit Ticket</h1>
             {props.ticket && props.ticket._id && <TicketForm handleSubmit = {handleSubmit} {...props.ticket} /> }
         </div>
     )

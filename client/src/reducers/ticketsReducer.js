@@ -18,6 +18,9 @@ const ticketsReducer = (state=[], action) => {
                 }
             })
         }
+        case 'LOGOUT': {
+            return []
+        }
         default: {
             return state
         }
@@ -26,7 +29,6 @@ const ticketsReducer = (state=[], action) => {
 
 // selector function
 export const ticketSelector = (state, selector) => {
-    console.log(state, selector)
     switch(selector.type) {
         case 'RESOLVED': {
             return state.filter(ticket=> ticket.isResolved)
@@ -44,7 +46,6 @@ export const ticketSelector = (state, selector) => {
             return state.filter(ticket => ticket.employee == selector.payload)
         }
         case 'CUSTOMER': {
-            console.log('hi')
             return state.filter(ticket => ticket.customer._id == selector.payload)
         }
     }

@@ -25,7 +25,9 @@ export const startGetDepartments = () => {
                 dispatch(setDepartments(departments))
             })
             .catch(err => {
-                console.log(err)
+                if (err.response.status == 401) {
+                    dispatch({type: 'LOGOUT'})
+                }
             })
     }
 }
@@ -45,6 +47,9 @@ export const startPostDepartment = (formData) => {
                 }
             })
             .catch(err => {
+                if (err.response.status == 401) {
+                    dispatch({type: 'LOGOUT'})
+                }
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
@@ -71,10 +76,13 @@ export const startPutDepartment = (id, formData) => {
                 }
             })
             .catch(err => {
+                if (err.response.status == 401) {
+                    dispatch({type: 'LOGOUT'})
+                }
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'There was an error while updating your department',
+                    text: err,
                     footer: 'Please try again'
                   })
             })
@@ -89,6 +97,9 @@ export const startDeleteDepartment = (id) => {
                 dispatch(removeDepartment(id))
             })
             .catch(err => {
+                if (err.response.status == 401) {
+                    dispatch({type: 'LOGOUT'})
+                }
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',

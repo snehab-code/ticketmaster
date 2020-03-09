@@ -1,7 +1,7 @@
-// this is the folder where your header etc should be!
 import React from 'react'
-
-import {Link} from 'react-router-dom'
+import {connect} from 'react-redux'
+import {Link, withRouter} from 'react-router-dom'
+import {logoutUser} from '../../actions/user'
 
 class Navigation extends React.Component {
 
@@ -12,9 +12,15 @@ class Navigation extends React.Component {
     }
   }
 
+  componentDidMount() {
+    console.log(this.props)
+    this.props.user.isLoggedIn === false && this.props.history.push('/account/login')
+  }
+
   handleLogout = () => {
     localStorage.removeItem('authToken')
-    window.location.href = '/account/login'
+    this.props.dispatch(logoutUser())
+    this.props.history.push('/account/login')
   }
 
   handleToggle = () => {
@@ -31,7 +37,7 @@ class Navigation extends React.Component {
             </button>
             <div className={!this.state.toggleActive ? "collapse navbar-collapse" : "collapse navbar-collapse show"}>
                 {
-                  !localStorage.getItem('authToken') ? 
+                  !this.props.user.isLoggedIn ? 
                 <div className="navbar-nav bd-navbar-nav">
                   <Link className="nav-item nav-link"  to="/account/login">Login</Link>
                   <Link className="nav-item nav-link"  to="/account/register">Register</Link>
@@ -47,12 +53,16 @@ class Navigation extends React.Component {
                 </div>
                 }
             </div>
-          
-        {/* // } */}
         </nav>
         </>
     )
   }
 }
 
-export default Navigation
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  }
+}
+
+export default withRouter(connect(mapStateToProps)(Navigation))

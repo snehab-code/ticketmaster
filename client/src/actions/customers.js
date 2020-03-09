@@ -21,11 +21,14 @@ export const startGetCustomers = () => {
     return (dispatch) => {
         axios.get('/customers')
             .then(response => {
+                dispatch({type:'LOGIN'})
                 const customers = response.data
                 dispatch(setCustomers(customers))
             })
             .catch(err => {
-                console.log(err)
+                if (err.response.status == 401) {
+                    dispatch({type: 'LOGOUT'})
+                }
             })
     }
 }
@@ -46,12 +49,16 @@ export const startPostCustomer = (formData, history) => {
                 }
             })
             .catch(err => {
+                if (err.response.status == 401) {
+                    dispatch({type: 'LOGOUT'})
+                }
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
                     text: err,
                     footer: 'Please try again'
                   })
+                history.push('/account/login')
             })
     }
 }
@@ -73,12 +80,16 @@ export const startPutCustomer = (id, formData, history) => {
                 }
             })
             .catch(err => {
+                if (err.response.status == 401) {
+                    dispatch({type: 'LOGOUT'})
+                }
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'There was an error while updating your customer',
-                    footer: err
+                    text: err,
+                    footer: 'Please try again'
                   })
+                history.push('/account/login')
             })
     }
 }
@@ -91,10 +102,13 @@ export const startDeleteCustomer = (id) => {
                 dispatch(removeCustomer(id))
             })
             .catch(err => {
+                if (err.response.status == 401) {
+                    dispatch({type: 'LOGOUT'})
+                }
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'There was an error while deleting your customer',
+                    text: err,
                     footer: 'Please try again'
                   })
             })

@@ -25,7 +25,9 @@ export const startGetEmployees = () => {
                 dispatch(setEmployees(employees))
             })
             .catch(err => {
-                console.log(err)
+                if (err.response.status == 401) {
+                    dispatch({type: 'LOGOUT'})
+                }
             })
     }
 }
@@ -47,12 +49,16 @@ export const startPostEmployee = (formData, history) => {
                 }
             })
             .catch(err => {
+                if (err.response.status == 401) {
+                    dispatch({type: 'LOGOUT'})
+                }
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
                     text: err,
                     footer: 'Please try again'
                   })
+                history.push('/account/login')
             })
     }
 }
@@ -75,12 +81,16 @@ export const startPutEmployee = (id, formData, history) => {
                 }
             })
             .catch(err => {
+                if (err.response.status == 401) {
+                    dispatch({type: 'LOGOUT'})
+                }
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'There was an error while updating your employee',
+                    text: err,
                     footer: 'Please try again'
                   })
+                history.push('/account/login')
             })
     }
 }
@@ -93,6 +103,9 @@ export const startDeleteEmployee = (id) => {
                 dispatch(removeEmployee(id))
             })
             .catch(err => {
+                if (err.response.status == 401) {
+                    dispatch({type: 'LOGOUT'})
+                }
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',

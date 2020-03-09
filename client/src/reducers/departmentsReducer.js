@@ -18,6 +18,9 @@ const departmentsReducer = (state=[], action) => {
                 }
             })
         }
+        case 'LOGOUT': {
+            return []
+        }
         default: {
             return state
         }

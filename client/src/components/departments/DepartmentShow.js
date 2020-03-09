@@ -4,7 +4,6 @@ import {idSelector} from '../../store/configureStore'
 import {ticketSelector} from '../../reducers/ticketsReducer'
 
 function DepartmentShow(props) {
-    console.log(props)
     return( 
         <div className="col-12">
         <div className="p-2 bg-light text-center">

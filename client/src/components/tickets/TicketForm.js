@@ -25,7 +25,6 @@ class TicketForm extends React.Component{
         for (let val of e.target.selectedOptions) {
             employee.push({_id: val.value})
         }
-        console.log(employee)
         this.setState({employee})
     }
 
@@ -39,12 +38,10 @@ class TicketForm extends React.Component{
             employees: this.state.employee,
             customer: this.state.customer
         }
-        // console.log(formData)
         this.props.handleSubmit(formData)
     }
 
     render() {
-        console.log('>_>')
         return (
             <form onSubmit={this.handleSubmit} className="form-group">
                 <label htmlFor="code">Code</label>

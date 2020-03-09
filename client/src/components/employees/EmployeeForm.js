@@ -28,7 +28,6 @@ class EmployeeForm extends React.Component {
     }
 
     render() {
-        console.log('props', this.props)
         return (
             <form onSubmit={this.handleSubmit}>
                 <div className="form-group row">

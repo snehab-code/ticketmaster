@@ -25,13 +25,15 @@ export const startGetTickets = () => {
                 dispatch(setTickets(tickets))
             })
             .catch(err => {
-                console.log(err)
+                if (err.response.status == 401) {
+                    dispatch({type: 'LOGOUT'})
+                }
             })
     }
 }
 
 export const startPostTicket = (formData, history) => {
-    return (dispatch) => {
+    return (dispatch, getState) => {
         axios.post('/tickets', formData)
             .then(response => {
                 if (response.data.errors) {
@@ -41,17 +43,28 @@ export const startPostTicket = (formData, history) => {
                     })
                 } else {
                     const ticket = response.data
+                    ticket.department = getState().departments.find(dept => dept._id == ticket.department)
+                    ticket.customer = getState().customers.find(customer => customer._id == ticket.customer)
+                    ticket.employees.map(employee => {
+                        return getState().employees.find(emp=> {
+                            return emp._id == employee
+                        })
+                    })
                     dispatch(addTicket(ticket))
                     history.push('/tickets')
                 }
             })
             .catch(err => {
+                if (err.response.status == 401) {
+                    dispatch({type: 'LOGOUT'})
+                }
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
                     text: err,
                     footer: 'Please try again'
                   })
+                history.push('/account/login')
             })
     }
 }
@@ -69,16 +82,20 @@ export const startPutTicket = (id, formData, history) => {
                     const ticket = response.data
                     const id = ticket._id
                     dispatch(updateTicket(id, ticket))
-                    history.push('/tickets')
+                    history && history.push('/tickets')
                 }
             })
             .catch(err => {
+                if (err.response.status == 401) {
+                    dispatch({type: 'LOGOUT'})
+                }
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'There was an error while updating your ticket',
+                    text: err,
                     footer: 'Please try again'
                   })
+                history.push('/account/login')
             })
     }
 }
@@ -91,6 +108,9 @@ export const startDeleteTicket = (id) => {
                 dispatch(removeTicket(id))
             })
             .catch(err => {
+                if (err.response.status == 401) {
+                    dispatch({type: 'LOGOUT'})
+                }
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',

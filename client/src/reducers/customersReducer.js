@@ -18,6 +18,9 @@ const customersReducer = (state=[], action) => {
                 }
             })
         }
+        case 'LOGOUT': {
+            return []
+        }
         default: {
             return state
         }

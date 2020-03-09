@@ -10,7 +10,7 @@ function TicketNew(props){
     }
 
     return (
-            <div className="col-md-6 border">
+            <div className="col-md-6 border rounded">
                 <h1 className="text-center">Add a ticket</h1>
                 <TicketForm handleSubmit={handleSubmit} />
             </div>

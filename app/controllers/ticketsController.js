@@ -37,8 +37,7 @@ module.exports.update = (req, res) => {
     Ticket.getStatus(id, userId)
         .then(status => {
             if(!status && body.isResolved) {
-                console.log('it works')
-                Ticket.findOneAndUpdate({_id: id, user: userId}, body, {new: true, runValidators: true})
+                Ticket.findOneAndUpdate({_id: id, user: userId}, body, {new: true, runValidators: true}).populate('department', ['_id', 'name']).populate('customer', ['_id', 'name']).populate({path: 'employees', model: 'Employee'})
                 .then(ticket => {
                     if(ticket) {
                         Customer.find(ticket.customer)
@@ -53,7 +52,7 @@ module.exports.update = (req, res) => {
                 })
                 .catch(err => res.json(err))
             } else {
-                Ticket.findOneAndUpdate({_id: id, user: userId}, body, {new: true, runValidators: true})
+                Ticket.findOneAndUpdate({_id: id, user: userId}, body, {new: true, runValidators: true}).populate('department', ['_id', 'name']).populate('customer', ['_id', 'name']).populate({path: 'employees', model: 'Employee'})
                 .then(ticket => {
                     if(ticket) {
                         res.json(ticket)

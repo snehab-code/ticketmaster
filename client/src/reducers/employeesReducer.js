@@ -18,6 +18,9 @@ const employeesReducer = (state=[], action) => {
                 }
             })
         }
+        case 'LOGOUT': {
+            return []
+        }
         default: {
             return state
         }

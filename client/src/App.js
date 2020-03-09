@@ -1,6 +1,6 @@
 import React from 'react'
 import {BrowserRouter, Route, Switch} from 'react-router-dom'
-
+import {connect} from 'react-redux'
 import Home from './components/Home'
 import Register from './components/Users/Register'
 import Login from './components/Users/Login'
@@ -20,12 +20,12 @@ import TicketEdit from './components/tickets/TicketEdit'
 import EmployeeEdit from './components/employees/EmployeeEdit'
 import Navigation from './components/statics/Navigation'
 
-function App() {
+function App(props) {
 
   return (
     <BrowserRouter>
-    <Navigation />
-      <div className="container col-12 d-flex justify-content-center" style={{marginTop:10}}>
+    {!props.user.isLoading && <Navigation />}
+      <div className="container col-10 d-flex justify-content-center" style={{marginTop:10}}>
         <Switch>
         <Route path="/" component={Home} exact/>
         <Route path="/account/register" component={Register} />
@@ -61,4 +61,10 @@ function App() {
   )
 }
 
-export default App
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  }
+}
+
+export default connect(mapStateToProps)(App)
